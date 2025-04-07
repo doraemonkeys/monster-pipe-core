@@ -1,7 +1,7 @@
 package web
 
 import (
-	"github.com/Monster-Pipe/monster-pipe-core/pkg/utils"
+	"github.com/doraemonkeys/monster-pipe-core/pkg/utils"
 	"github.com/gin-gonic/gin"
 )
 

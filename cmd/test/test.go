@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/Monster-Pipe/monster-pipe-core/pkg/utils"
+	"github.com/doraemonkeys/monster-pipe-core/pkg/utils"
 )
 
 type Config struct {

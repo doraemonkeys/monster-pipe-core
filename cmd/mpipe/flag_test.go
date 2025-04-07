@@ -3,8 +3,8 @@ package main
 import (
 	"testing"
 
-	"github.com/Monster-Pipe/monster-pipe-core/internal/forwarder"
-	"github.com/Monster-Pipe/monster-pipe-core/pkg/protocol"
+	"github.com/doraemonkeys/monster-pipe-core/internal/forwarder"
+	"github.com/doraemonkeys/monster-pipe-core/pkg/protocol"
 )
 
 func Test_parseNetInput(t *testing.T) {

@@ -14,9 +14,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/Monster-Pipe/monster-pipe-core/internal/forwarder"
-	"github.com/Monster-Pipe/monster-pipe-core/pkg/protocol"
 	"github.com/chzyer/readline"
+	"github.com/doraemonkeys/monster-pipe-core/internal/forwarder"
+	"github.com/doraemonkeys/monster-pipe-core/pkg/protocol"
 	"github.com/fatih/color"
 	"github.com/kevinburke/ssh_config"
 	"golang.org/x/crypto/ssh"

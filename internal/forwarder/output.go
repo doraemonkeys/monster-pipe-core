@@ -7,7 +7,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/Monster-Pipe/monster-pipe-core/pkg/protocol"
+	"github.com/doraemonkeys/monster-pipe-core/pkg/protocol"
 	"golang.org/x/sync/singleflight"
 )
 

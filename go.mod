@@ -1,4 +1,4 @@
-module github.com/Monster-Pipe/monster-pipe-core
+module github.com/doraemonkeys/monster-pipe-core
 
 go 1.23.2
 

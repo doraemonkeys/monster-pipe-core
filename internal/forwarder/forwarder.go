@@ -3,6 +3,7 @@ package forwarder
 import (
 	"context"
 	"fmt"
+	"io"
 	"net"
 	"regexp"
 	"strings"
@@ -99,6 +100,9 @@ func (f *MonsterPipeCoreForwarder) Run(ctx context.Context) error {
 				MessageType: ForwardMsgTypeAcceptError,
 				Err:         err,
 			})
+			if err == net.ErrClosed || err == io.EOF {
+				return fmt.Errorf("listener closed")
+			}
 			continue
 		}
 		var connBlocked bool
