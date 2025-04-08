@@ -54,13 +54,13 @@ func printMessage(message forwarder.ForwardMessage) {
 			tunnelMsg := message.TunnelMsg
 			switch tunnelMsg.MessageType {
 			case forwarder.ForwardConnMsgTypeInputReadError:
-				fmt.Printf("[%s] %s: %s | %s\n", red(timestamp), red("Read from input Error"), blue(message.ConnAddr.String()), red(tunnelMsg.Err))
+				fmt.Printf("[%s] %s: %s | %s\n", red(timestamp), red("Read <- Input Error"), blue(message.ConnAddr.String()), red(tunnelMsg.Err))
 			case forwarder.ForwardConnMsgTypeWriteToInputError:
-				fmt.Printf("[%s] %s: %s -> %s | %s\n", red(timestamp), red("Write to input Error"), blue(message.ConnAddr.String()), yellow(tunnelMsg.Address()), red(tunnelMsg.Err))
+				fmt.Printf("[%s] %s: %s -> %s | %s\n", red(timestamp), red("Write -> Input Error"), blue(message.ConnAddr.String()), yellow(tunnelMsg.Address()), red(tunnelMsg.Err))
 			case forwarder.ForwardConnMsgTypeWriteToOutputError:
-				fmt.Printf("[%s] %s: %s <- %s | %s\n", red(timestamp), red("Write to output Error"), blue(message.ConnAddr.String()), yellow(tunnelMsg.Address()), red(tunnelMsg.Err))
+				fmt.Printf("[%s] %s: %s <- %s | %s\n", red(timestamp), red("Write -> Output Error"), blue(message.ConnAddr.String()), yellow(tunnelMsg.Address()), red(tunnelMsg.Err))
 			case forwarder.ForwardConnMsgTypeOutputReadError:
-				fmt.Printf("[%s] %s: %s <- %s | %s\n", red(timestamp), red("Read from output Error"), blue(message.ConnAddr.String()), yellow(tunnelMsg.Address()), red(tunnelMsg.Err))
+				fmt.Printf("[%s] %s: %s <- %s | %s\n", red(timestamp), red("Read <- Output Error"), blue(message.ConnAddr.String()), yellow(tunnelMsg.Address()), red(tunnelMsg.Err))
 			case forwarder.ForwardConnMsgTypeTunnelClosed:
 				fmt.Printf("[%s] %s : %s by %s\n", yellow(timestamp), yellow("Tunnel Closed"), blue(message.ConnAddr.String()), closedBy(message.TunnelMsg.ClosedByOutput))
 			}
