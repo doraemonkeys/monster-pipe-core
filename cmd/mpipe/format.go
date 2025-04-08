@@ -34,79 +34,39 @@ func iif(condition bool, trueVal, falseVal string) string {
 	}
 	return falseVal
 }
+
+// Simplified printMessage and printMessageVerbose based on your original code
 func printMessage(message forwarder.ForwardMessage) {
 	timestamp := time.Now().Format("2006-01-02 15:04:05.000")
 
 	switch message.MessageType {
 	case forwarder.ForwardMsgTypeAccept:
-		fmt.Printf("[%s] %s: %s\n",
+		fmt.Printf("[%s] %s: %s %s\n",
 			green(timestamp),
 			green("Connection Accepted"),
 			blue(message.ConnAddr.String()),
+			iif(message.ConnBlocked, red("(Blocked)"), ""),
 		)
-		if message.ConnBlocked {
-			fmt.Printf("  %s\n", red("Connection is blocked by rules"))
-		}
 	case forwarder.ForwardMsgTypeAcceptError:
-		fmt.Printf("[%s] %s: %s\n",
-			red(timestamp),
-			red("Connection Accepted Error"),
-			red(message.Err),
-		)
+		fmt.Printf("[%s] %s: %s\n", red(timestamp), red("Connection Accepted Error"), red(message.Err))
 	case forwarder.ForwardMsgTypeTunnel:
 		if message.TunnelMsg != nil {
 			tunnelMsg := message.TunnelMsg
 			switch tunnelMsg.MessageType {
-			case forwarder.ForwardConnMsgTypeInputRead:
 			case forwarder.ForwardConnMsgTypeInputReadError:
-				fmt.Printf("[%s] %s: %s | %s\n",
-					red(timestamp),
-					red("Read from input Error"),
-					blue(message.ConnAddr.String()),
-					red(tunnelMsg.Err),
-				)
+				fmt.Printf("[%s] %s: %s | %s\n", red(timestamp), red("Read from input Error"), blue(message.ConnAddr.String()), red(tunnelMsg.Err))
 			case forwarder.ForwardConnMsgTypeWriteToInputError:
-				fmt.Printf("[%s] %s: %s -> %s | %s\n",
-					red(timestamp),
-					red("Write to input Error"),
-					blue(message.ConnAddr.String()),
-					yellow(tunnelMsg.Address()),
-					red(tunnelMsg.Err),
-				)
-			case forwarder.ForwardConnMsgTypeWriteToInputOK:
-			case forwarder.ForwardConnMsgTypeOutputRead:
-			case forwarder.ForwardConnMsgTypeWriteToOutputOK:
+				fmt.Printf("[%s] %s: %s -> %s | %s\n", red(timestamp), red("Write to input Error"), blue(message.ConnAddr.String()), yellow(tunnelMsg.Address()), red(tunnelMsg.Err))
 			case forwarder.ForwardConnMsgTypeWriteToOutputError:
-				fmt.Printf("[%s] %s: %s <- %s | %s\n",
-					red(timestamp),
-					red("Write to output Error"),
-					blue(message.ConnAddr.String()),
-					yellow(tunnelMsg.Address()),
-					red(tunnelMsg.Err),
-				)
+				fmt.Printf("[%s] %s: %s <- %s | %s\n", red(timestamp), red("Write to output Error"), blue(message.ConnAddr.String()), yellow(tunnelMsg.Address()), red(tunnelMsg.Err))
 			case forwarder.ForwardConnMsgTypeOutputReadError:
-				fmt.Printf("[%s] %s: %s <- %s | %s\n",
-					red(timestamp),
-					red("Read from output Error"),
-					blue(message.ConnAddr.String()),
-					yellow(tunnelMsg.Address()),
-					red(tunnelMsg.Err),
-				)
+				fmt.Printf("[%s] %s: %s <- %s | %s\n", red(timestamp), red("Read from output Error"), blue(message.ConnAddr.String()), yellow(tunnelMsg.Address()), red(tunnelMsg.Err))
 			case forwarder.ForwardConnMsgTypeTunnelClosed:
-				fmt.Printf("[%s] %s : %s by %s\n",
-					yellow(timestamp),
-					yellow("Tunnel closed"),
-					blue(message.ConnAddr.String()),
-					closedBy(message.TunnelMsg.ClosedByOutput),
-				)
+				fmt.Printf("[%s] %s : %s by %s\n", yellow(timestamp), yellow("Tunnel Closed"), blue(message.ConnAddr.String()), closedBy(message.TunnelMsg.ClosedByOutput))
 			}
 		}
 	case forwarder.ForwardMsgTypeCommonError:
-		fmt.Printf("[%s] %s: %s\n",
-			red(timestamp),
-			red("Common Error"),
-			red(message.Err),
-		)
+		fmt.Printf("[%s] %s: %s\n", red(timestamp), red("Error"), red(message.Err))
 	}
 }
 
@@ -115,94 +75,57 @@ func printMessageVerbose(message forwarder.ForwardMessage) {
 
 	switch message.MessageType {
 	case forwarder.ForwardMsgTypeAccept:
-		fmt.Printf("[%s] %s: %s\n",
+		fmt.Printf("[%s] %s: %s %s\n",
 			green(timestamp),
 			green("Connection Accepted"),
 			blue(message.ConnAddr.String()),
+			iif(message.ConnBlocked, red("(Blocked by rules)"), ""),
 		)
-		if message.ConnBlocked {
-			fmt.Printf("  %s\n", red("Connection is blocked by rules"))
-		}
+	case forwarder.ForwardMsgTypeAcceptError:
+		fmt.Printf("[%s] %s: %s\n",
+			red(timestamp),
+			red("Connection Accept Error"),
+			red(message.Err),
+		)
 	case forwarder.ForwardMsgTypeTunnel:
 		if message.TunnelMsg != nil {
 			tunnelMsg := message.TunnelMsg
+			connAddrStr := blue(message.ConnAddr.String())
+			outputAddrStr := yellow(tunnelMsg.Address())
+
 			switch tunnelMsg.MessageType {
 			case forwarder.ForwardConnMsgTypeInputRead:
-				fmt.Printf("[%s] %s: %s | %s\n",
-					cyan(timestamp),
-					cyan("Read from input"),
-					blue(message.ConnAddr.String()),
-					formatData(tunnelMsg.Data),
-				)
+				fmt.Printf("[%s] %s: %s | %d bytes | Data: %s\n",
+					cyan(timestamp), cyan("Read <- Input"), connAddrStr, len(tunnelMsg.Data), formatData(tunnelMsg.Data))
 			case forwarder.ForwardConnMsgTypeInputReadError:
 				fmt.Printf("[%s] %s: %s | %s\n",
-					red(timestamp),
-					red("Read from input Error"),
-					blue(message.ConnAddr.String()),
-					red(tunnelMsg.Err),
-				)
-			case forwarder.ForwardConnMsgTypeWriteToInputError:
-				fmt.Printf("[%s] %s: %s -> %s | %s\n",
-					red(timestamp),
-					red("Write to input Error"),
-					blue(message.ConnAddr.String()),
-					yellow(tunnelMsg.Address()),
-					red(tunnelMsg.Err),
-				)
+					red(timestamp), red("Read <- Input Error"), connAddrStr, red(tunnelMsg.Err))
 			case forwarder.ForwardConnMsgTypeWriteToInputOK:
 				fmt.Printf("[%s] %s: %s <- %s | %d bytes\n",
-					cyan(timestamp),
-					cyan("Write to input OK"),
-					blue(message.ConnAddr.String()),
-					yellow(tunnelMsg.Address()),
-					len(tunnelMsg.Data),
-				)
-			case forwarder.ForwardConnMsgTypeOutputRead:
-				fmt.Printf("[%s] %s: %s | %s\n",
-					magenta(timestamp),
-					magenta("Read from output"),
-					yellow(tunnelMsg.Address()),
-					formatData(tunnelMsg.Data),
-				)
-			case forwarder.ForwardConnMsgTypeWriteToOutputOK:
-				fmt.Printf("[%s] %s: %s -> %s | %d bytes\n",
-					magenta(timestamp),
-					magenta("Write to output OK"),
-					blue(message.ConnAddr.String()),
-					yellow(tunnelMsg.Address()),
-					len(tunnelMsg.Data),
-				)
-			case forwarder.ForwardConnMsgTypeWriteToOutputError:
+					cyan(timestamp), cyan("Write -> Input OK"), connAddrStr, outputAddrStr, len(tunnelMsg.Data))
+			case forwarder.ForwardConnMsgTypeWriteToInputError:
 				fmt.Printf("[%s] %s: %s <- %s | %s\n",
-					red(timestamp),
-					red("Write to output Error"),
-					blue(message.ConnAddr.String()),
-					yellow(tunnelMsg.Address()),
-					red(tunnelMsg.Err),
-				)
+					red(timestamp), red("Write -> Input Error"), connAddrStr, outputAddrStr, red(tunnelMsg.Err))
+			case forwarder.ForwardConnMsgTypeOutputRead:
+				fmt.Printf("[%s] %s: %s <- %s | %d bytes | Data: %s\n",
+					magenta(timestamp), magenta("Read <- Output"), connAddrStr, outputAddrStr, len(tunnelMsg.Data), formatData(tunnelMsg.Data))
 			case forwarder.ForwardConnMsgTypeOutputReadError:
 				fmt.Printf("[%s] %s: %s <- %s | %s\n",
-					red(timestamp),
-					red("Read from output Error"),
-					blue(message.ConnAddr.String()),
-					yellow(tunnelMsg.Address()),
-					red(tunnelMsg.Err),
-				)
+					red(timestamp), red("Read <- Output Error"), connAddrStr, outputAddrStr, red(tunnelMsg.Err))
+			case forwarder.ForwardConnMsgTypeWriteToOutputOK:
+				fmt.Printf("[%s] %s: %s -> %s | %d bytes\n",
+					magenta(timestamp), magenta("Write -> Output OK"), connAddrStr, outputAddrStr, len(tunnelMsg.Data))
+			case forwarder.ForwardConnMsgTypeWriteToOutputError:
+				fmt.Printf("[%s] %s: %s -> %s | %s\n",
+					red(timestamp), red("Write -> Output Error"), connAddrStr, outputAddrStr, red(tunnelMsg.Err))
 			case forwarder.ForwardConnMsgTypeTunnelClosed:
 				fmt.Printf("[%s] %s : %s by %s\n",
-					yellow(timestamp),
-					yellow("Tunnel closed"),
-					blue(message.ConnAddr.String()),
-					closedBy(message.TunnelMsg.ClosedByOutput),
-				)
+					yellow(timestamp), yellow("Tunnel Closed"), connAddrStr, closedBy(message.TunnelMsg.ClosedByOutput))
 			}
 		}
 	case forwarder.ForwardMsgTypeCommonError:
 		fmt.Printf("[%s] %s: %s\n",
-			red(timestamp),
-			red("Common Error"),
-			red(message.Err),
-		)
+			red(timestamp), red("Common Error"), red(message.Err))
 	}
 }
 
