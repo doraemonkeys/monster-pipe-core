@@ -38,14 +38,14 @@ func main() {
 		fmt.Println(err)
 		return
 	}
-	fmt.Printf("input: %#v\n", input.Config)
+	// fmt.Printf("input: %#v\n", input.Config)
 	outputs, err := parseNetOutputsConfig(outputCmd)
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
 	var ForwardOutputs []*forwarder.ForwardOutput = make([]*forwarder.ForwardOutput, 0, len(outputs))
-	for i, output := range outputs {
+	for _, output := range outputs {
 		if output.Host == "ssh" && sshClient == nil {
 			log.Fatal("ssh client config not found")
 		}
@@ -58,9 +58,11 @@ func main() {
 		} else {
 			ForwardOutputs = append(ForwardOutputs, forwarder.NewForwardOutput(output, nil))
 		}
-		fmt.Printf("Output(%d): %#v\n", i, output)
+		// fmt.Printf("Output(%d): %#v\n", i, output)
 	}
-	// i := 0
+
+	prettyPrintConfig(input.Config, outputs)
+
 	f := forwarder.NewForwarder(input, ForwardOutputs, func(message forwarder.ForwardMessage) {
 		// fmt.Println("message: ", message)
 		// print message
@@ -70,8 +72,13 @@ func main() {
 			printMessage(message)
 		}
 	})
+
+	fmt.Println(green("\nStarting forwarder..."))
+
 	err = f.Run(context.Background())
 	if err != nil {
-		fmt.Println(err)
+		fmt.Println(red("Forwarder stopped with error:"), err)
+	} else {
+		fmt.Println(yellow("Forwarder stopped."))
 	}
 }
