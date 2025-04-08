@@ -84,7 +84,7 @@ func (f *MonsterPipeCoreForwarder) Run(ctx context.Context) error {
 	if err != nil {
 		return err
 	}
-	fmt.Println("mpipe forwarder start, listen on input", listener.Addr().String())
+	fmt.Println("mpipe listening on input", listener.Addr().String())
 	defer listener.Close()
 
 	for {
