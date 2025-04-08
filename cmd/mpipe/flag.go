@@ -26,9 +26,9 @@ import (
 var (
 	sshHostCmd       *string = flag.String("ssh", "", "ssh host")
 	verboseCmd       *bool   = flag.Bool("verbose", false, "verbose")
-	sshIdentityCmd   *string = flag.String("i", "", "ssh identity file")
+	sshIdentityCmd   *string = flag.String("ssh-i", "", "ssh identity file")
 	sshConfigFileCmd *string = flag.String("ssh-config", "", "ssh config file")
-	sshPortCmd       *int    = flag.Int("p", 0, "ssh port")
+	sshPortCmd       *int    = flag.Int("ssh-p", 0, "ssh port")
 	sshPwdFileCmd    *string = flag.String("ssh-pwd-file", "", "ssh password file")
 )
 
@@ -572,7 +572,7 @@ func main() {
 
 func PrintUsage() {
 	Usages := strings.Join([]string{
-		"Usage: mpipe [input] [output[,...]]",
+		"Usage: mpipe [options...] [input] [output[,...]]",
 		"\n",
 		"Usage: mpipe 0.0.0.0:6777@udp '192.168.1.100:9090@tcp>,192.168.1.101:9090@udp<,192.168.1.102:9989@tcp'",
 		"Usage: mpipe -ssh user@example.com:22 ssh:7890@tcp  local:7890@tcp=",
@@ -589,7 +589,6 @@ func PrintUsage() {
 	flag.PrintDefaults()
 }
 
-// 定义颜色
 var (
 	green   = color.New(color.FgGreen).SprintFunc()
 	yellow  = color.New(color.FgYellow).SprintFunc()
@@ -633,14 +632,14 @@ func printMessage(message forwarder.ForwardMessage) {
 			case forwarder.ForwardConnMsgTypeInputReadError:
 				fmt.Printf("[%s] %s: %s | %s\n",
 					red(timestamp),
-					red("Input Read Error"),
+					red("Read from input Error"),
 					blue(message.ConnAddr.String()),
 					red(tunnelMsg.Err),
 				)
 			case forwarder.ForwardConnMsgTypeWriteToInputError:
 				fmt.Printf("[%s] %s: %s -> %s | %s\n",
 					red(timestamp),
-					red("Input Write Error"),
+					red("Write to input Error"),
 					blue(message.ConnAddr.String()),
 					yellow(tunnelMsg.Address()),
 					red(tunnelMsg.Err),
@@ -651,7 +650,7 @@ func printMessage(message forwarder.ForwardMessage) {
 			case forwarder.ForwardConnMsgTypeWriteToOutputError:
 				fmt.Printf("[%s] %s: %s <- %s | %s\n",
 					red(timestamp),
-					red("Output Write Error"),
+					red("Write to output Error"),
 					blue(message.ConnAddr.String()),
 					yellow(tunnelMsg.Address()),
 					red(tunnelMsg.Err),
@@ -659,7 +658,7 @@ func printMessage(message forwarder.ForwardMessage) {
 			case forwarder.ForwardConnMsgTypeOutputReadError:
 				fmt.Printf("[%s] %s: %s <- %s | %s\n",
 					red(timestamp),
-					red("Output Read Error"),
+					red("Read from output Error"),
 					blue(message.ConnAddr.String()),
 					yellow(tunnelMsg.Address()),
 					red(tunnelMsg.Err),
@@ -702,14 +701,14 @@ func printMessageVerbose(message forwarder.ForwardMessage) {
 			case forwarder.ForwardConnMsgTypeInputRead:
 				fmt.Printf("[%s] %s: %s | %s\n",
 					cyan(timestamp),
-					cyan("Input Read"),
+					cyan("Read from input"),
 					blue(message.ConnAddr.String()),
 					formatData(tunnelMsg.Data),
 				)
 			case forwarder.ForwardConnMsgTypeInputReadError:
 				fmt.Printf("[%s] %s: %s | %s\n",
 					red(timestamp),
-					red("Input Read Error"),
+					red("Read from input Error"),
 					blue(message.ConnAddr.String()),
 					red(tunnelMsg.Err),
 				)
@@ -732,7 +731,7 @@ func printMessageVerbose(message forwarder.ForwardMessage) {
 			case forwarder.ForwardConnMsgTypeOutputRead:
 				fmt.Printf("[%s] %s: %s | %s\n",
 					magenta(timestamp),
-					magenta("Output Read"),
+					magenta("Read from output"),
 					yellow(tunnelMsg.Address()),
 					formatData(tunnelMsg.Data),
 				)
@@ -747,7 +746,7 @@ func printMessageVerbose(message forwarder.ForwardMessage) {
 			case forwarder.ForwardConnMsgTypeWriteToOutputError:
 				fmt.Printf("[%s] %s: %s <- %s | %s\n",
 					red(timestamp),
-					red("Output Write Error"),
+					red("Write to output Error"),
 					blue(message.ConnAddr.String()),
 					yellow(tunnelMsg.Address()),
 					red(tunnelMsg.Err),
@@ -755,7 +754,7 @@ func printMessageVerbose(message forwarder.ForwardMessage) {
 			case forwarder.ForwardConnMsgTypeOutputReadError:
 				fmt.Printf("[%s] %s: %s <- %s | %s\n",
 					red(timestamp),
-					red("Output Read Error"),
+					red("Read from output Error"),
 					blue(message.ConnAddr.String()),
 					yellow(tunnelMsg.Address()),
 					red(tunnelMsg.Err),
