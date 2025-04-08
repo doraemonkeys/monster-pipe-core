@@ -171,11 +171,22 @@ func parseSSHPort(sshHost string) (int, error) {
 }
 
 // host:port@protocol
-func parseNetInputConfig(input string) (*forwarder.ForwardInputConfig, error) {
+func parseNetInputConfig(addr string) (*forwarder.ForwardInputConfig, error) {
+	netAddrConfig, err := parseNetAddrConfig(addr, true)
+	if err != nil {
+		return nil, err
+	}
+	return &forwarder.ForwardInputConfig{
+		NetAddrConfig: *netAddrConfig,
+	}, nil
+}
+
+// host:port@protocol
+func parseNetAddrConfig(addr string, isInput bool) (*forwarder.NetAddrConfig, error) {
 	var pt string = "tcp"
-	parts := strings.Split(input, "@")
+	parts := strings.Split(addr, "@")
 	if len(parts) > 2 {
-		return nil, fmt.Errorf("invalid input format: %s", input)
+		return nil, fmt.Errorf("invalid addr format: %s", addr)
 	} else if len(parts) == 2 {
 		pt = strings.ToLower(parts[1])
 	}
@@ -206,10 +217,10 @@ func parseNetInputConfig(input string) (*forwarder.ForwardInputConfig, error) {
 	if err != nil {
 		return nil, fmt.Errorf("invalid protocol: %s", pt)
 	}
-	if host == "" {
+	if host == "" && !isInput {
 		host = "localhost"
 	}
-	return &forwarder.ForwardInputConfig{
+	return &forwarder.NetAddrConfig{
 		Host:     host,
 		Port:     port,
 		Protocol: protocol2,
@@ -236,7 +247,7 @@ func parseNetOutputConfig(output string) (*forwarder.ForwardOutputConfig, error)
 	if hasSuffix {
 		output = output[:len(output)-1]
 	}
-	input, err := parseNetInputConfig(output)
+	input, err := parseNetAddrConfig(output, false)
 	if err != nil {
 		return nil, err
 	}

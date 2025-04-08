@@ -16,50 +16,68 @@ func Test_parseNetInput(t *testing.T) {
 		wantErr bool
 	}{
 		{"1", "192.168.1.1:6789", &forwarder.ForwardInputConfig{
-			Host:     "192.168.1.1",
-			Port:     6789,
-			Protocol: protocol.NetProtocolTCP,
+			NetAddrConfig: forwarder.NetAddrConfig{
+				Host:     "192.168.1.1",
+				Port:     6789,
+				Protocol: protocol.NetProtocolTCP,
+			},
 		}, false},
 		{"2", "192.168.1.1:6789@tcp", &forwarder.ForwardInputConfig{
-			Host:     "192.168.1.1",
-			Port:     6789,
-			Protocol: protocol.NetProtocolTCP,
+			NetAddrConfig: forwarder.NetAddrConfig{
+				Host:     "192.168.1.1",
+				Port:     6789,
+				Protocol: protocol.NetProtocolTCP,
+			},
 		}, false},
 		{"3", "192.168.1.1:6789@udp", &forwarder.ForwardInputConfig{
-			Host:     "192.168.1.1",
-			Port:     6789,
-			Protocol: protocol.NetProtocolUDP,
+			NetAddrConfig: forwarder.NetAddrConfig{
+				Host:     "192.168.1.1",
+				Port:     6789,
+				Protocol: protocol.NetProtocolUDP,
+			},
 		}, false},
 		{"4", "192.168.1.1:6789@udp@1234", &forwarder.ForwardInputConfig{}, true},
 		{"5", "192.168.1.1:6789@tcp4", &forwarder.ForwardInputConfig{
-			Host:     "192.168.1.1",
-			Port:     6789,
-			Protocol: protocol.NetProtocolTCP4,
+			NetAddrConfig: forwarder.NetAddrConfig{
+				Host:     "192.168.1.1",
+				Port:     6789,
+				Protocol: protocol.NetProtocolTCP4,
+			},
 		}, false},
 		{"6", "192.168.1.1:6789@tcp6", &forwarder.ForwardInputConfig{
-			Host:     "192.168.1.1",
-			Port:     6789,
-			Protocol: protocol.NetProtocolTCP6,
+			NetAddrConfig: forwarder.NetAddrConfig{
+				Host:     "192.168.1.1",
+				Port:     6789,
+				Protocol: protocol.NetProtocolTCP6,
+			},
 		}, false},
 		{"7", ":6789@udp", &forwarder.ForwardInputConfig{
-			Host:     "",
-			Port:     6789,
-			Protocol: protocol.NetProtocolUDP,
+			NetAddrConfig: forwarder.NetAddrConfig{
+				Host:     "",
+				Port:     6789,
+				Protocol: protocol.NetProtocolUDP,
+			},
 		}, false},
 		{"8", "ssh:6789", &forwarder.ForwardInputConfig{
-			Host:     "",
-			Port:     6789,
-			Protocol: protocol.NetProtocolTCP,
+			NetAddrConfig: forwarder.NetAddrConfig{
+				Host:     "",
+				Port:     6789,
+				Protocol: protocol.NetProtocolTCP,
+			},
 		}, false},
 		{"9", "ssh:6789@tcp", &forwarder.ForwardInputConfig{
-			Host:     "",
-			Port:     6789,
-			Protocol: protocol.NetProtocolTCP,
+			NetAddrConfig: forwarder.NetAddrConfig{
+				Host:     "",
+				Port:     6789,
+				Protocol: protocol.NetProtocolTCP,
+			},
 		}, false},
 		{"10", "ssh:127.0.0.1:6789", &forwarder.ForwardInputConfig{
-			Host:     "127.0.0.1",
-			Port:     6789,
-			Protocol: protocol.NetProtocolTCP,
+			NetAddrConfig: forwarder.NetAddrConfig{
+				Host:     "127.0.0.1",
+				Port:     6789,
+				Protocol: protocol.NetProtocolTCP,
+			},
 		}, false},
 	}
 	for _, tt := range tests {
@@ -87,74 +105,94 @@ func Test_parseNetOutput(t *testing.T) {
 		wantErr bool
 	}{
 		{"1", "192.168.1.1:6789", &forwarder.ForwardOutputConfig{
-			Host:     "192.168.1.1",
-			Port:     6789,
-			Protocol: protocol.NetProtocolTCP,
+			NetAddrConfig: forwarder.NetAddrConfig{
+				Host:     "192.168.1.1",
+				Port:     6789,
+				Protocol: protocol.NetProtocolTCP,
+			},
 			Readable: true,
 			Writable: true,
 		}, false},
 		{"2", "192.168.1.1:6789@tcp", &forwarder.ForwardOutputConfig{
-			Host:     "192.168.1.1",
-			Port:     6789,
-			Protocol: protocol.NetProtocolTCP,
+			NetAddrConfig: forwarder.NetAddrConfig{
+				Host:     "192.168.1.1",
+				Port:     6789,
+				Protocol: protocol.NetProtocolTCP,
+			},
 			Readable: true,
 			Writable: true,
 		}, false},
 		{"3", "192.168.1.1:6789@udp", &forwarder.ForwardOutputConfig{
-			Host:     "192.168.1.1",
-			Port:     6789,
-			Protocol: protocol.NetProtocolUDP,
+			NetAddrConfig: forwarder.NetAddrConfig{
+				Host:     "192.168.1.1",
+				Port:     6789,
+				Protocol: protocol.NetProtocolUDP,
+			},
 			Readable: true,
 			Writable: true,
 		}, false},
 		{"4", "192.168.1.1:6789@udp@1234", &forwarder.ForwardOutputConfig{}, true},
 		{"5", "192.168.1.1:6789@tcp4", &forwarder.ForwardOutputConfig{
-			Host:     "192.168.1.1",
-			Port:     6789,
-			Protocol: protocol.NetProtocolTCP4,
+			NetAddrConfig: forwarder.NetAddrConfig{
+				Host:     "192.168.1.1",
+				Port:     6789,
+				Protocol: protocol.NetProtocolTCP4,
+			},
 			Readable: true,
 			Writable: true,
 		}, false},
 		{"6", "192.168.1.1:6789@tcp6", &forwarder.ForwardOutputConfig{
-			Host:     "192.168.1.1",
-			Port:     6789,
-			Protocol: protocol.NetProtocolTCP6,
+			NetAddrConfig: forwarder.NetAddrConfig{
+				Host:     "192.168.1.1",
+				Port:     6789,
+				Protocol: protocol.NetProtocolTCP6,
+			},
 			Readable: true,
 			Writable: true,
 		}, false},
 		{"7", "192.168.1.1:6789@tcp=1234", &forwarder.ForwardOutputConfig{}, true},
 		{"8", "192.168.1.1:6789@tcp<", &forwarder.ForwardOutputConfig{
-			Host:     "192.168.1.1",
-			Port:     6789,
-			Protocol: protocol.NetProtocolTCP,
+			NetAddrConfig: forwarder.NetAddrConfig{
+				Host:     "192.168.1.1",
+				Port:     6789,
+				Protocol: protocol.NetProtocolTCP,
+			},
 			Readable: false,
 			Writable: true,
 		}, false},
 		{"9", "192.168.1.1:6789@tcp>", &forwarder.ForwardOutputConfig{
-			Host:     "192.168.1.1",
-			Port:     6789,
-			Protocol: protocol.NetProtocolTCP,
+			NetAddrConfig: forwarder.NetAddrConfig{
+				Host:     "192.168.1.1",
+				Port:     6789,
+				Protocol: protocol.NetProtocolTCP,
+			},
 			Readable: true,
 			Writable: false,
 		}, false},
 		{"10", "192.168.1.1:6789@tcp=", &forwarder.ForwardOutputConfig{
-			Host:     "192.168.1.1",
-			Port:     6789,
-			Protocol: protocol.NetProtocolTCP,
+			NetAddrConfig: forwarder.NetAddrConfig{
+				Host:     "192.168.1.1",
+				Port:     6789,
+				Protocol: protocol.NetProtocolTCP,
+			},
 			Readable: true,
 			Writable: true,
 		}, false},
 		{"11", "ssh:7890@tcp", &forwarder.ForwardOutputConfig{
-			Host:     "", //dial
-			Port:     7890,
-			Protocol: protocol.NetProtocolTCP,
+			NetAddrConfig: forwarder.NetAddrConfig{
+				Host:     "", //dial
+				Port:     7890,
+				Protocol: protocol.NetProtocolTCP,
+			},
 			Readable: true,
 			Writable: true,
 		}, false},
 		{"12", "ssh:127.0.0.1:7890@tcp", &forwarder.ForwardOutputConfig{
-			Host:     "127.0.0.1",
-			Port:     7890,
-			Protocol: protocol.NetProtocolTCP,
+			NetAddrConfig: forwarder.NetAddrConfig{
+				Host:     "127.0.0.1",
+				Port:     7890,
+				Protocol: protocol.NetProtocolTCP,
+			},
 			Readable: true,
 			Writable: true,
 		}, false},

@@ -10,9 +10,7 @@ import (
 )
 
 type ForwardInputConfig struct {
-	Host     string
-	Port     int
-	Protocol protocol.NetProtocol
+	NetAddrConfig
 	// Blacklist and Whitelist can only exist one, the other is nil
 	//
 	// for example, "192.0.2.1:25", "[2001:db8::1]:80" , "192.0.2.1:*"
@@ -21,6 +19,12 @@ type ForwardInputConfig struct {
 	//
 	// for example, "192.0.2.1:25", "[2001:db8::1]:80" , "192.0.2.1:*"
 	Whitelist []MatchHostConfig
+}
+
+type NetAddrConfig struct {
+	Host     string
+	Port     int
+	Protocol protocol.NetProtocol
 }
 
 type MatchHostConfig struct {

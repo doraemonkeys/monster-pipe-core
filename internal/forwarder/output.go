@@ -7,16 +7,13 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/doraemonkeys/monster-pipe-core/pkg/protocol"
 	"golang.org/x/sync/singleflight"
 )
 
 type ForwardOutputConfig struct {
 	Readable bool
 	Writable bool
-	Host     string
-	Port     int
-	Protocol protocol.NetProtocol
+	NetAddrConfig
 }
 
 func (f ForwardOutputConfig) Target() string {
