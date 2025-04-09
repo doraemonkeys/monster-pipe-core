@@ -133,7 +133,7 @@ func closedBy(byOutput bool) string {
 	if byOutput {
 		return yellow("output")
 	}
-	return blue("input")
+	return yellow("input")
 }
 
 // prettyPrintConfig formats and prints the input and output configurations.
