@@ -203,6 +203,10 @@ func parseNetAddrConfig(addr string, isInput bool) (*forwarder.NetAddrConfig, er
 		case 3:
 			// ssh:127.0.0.1:6789
 			host = hostPort[1]
+		default:
+			// ssh:[::]:6789
+			host = strings.Join(hostPort[1:len(hostPort)-1], ":")
+			host = strings.Trim(host, "[]")
 		}
 	}
 

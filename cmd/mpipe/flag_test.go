@@ -79,6 +79,27 @@ func Test_parseNetInput(t *testing.T) {
 				Protocol: protocol.NetProtocolTCP,
 			},
 		}, false},
+		{"11", "ssh:0.0.0.0:6789", &forwarder.ForwardInputConfig{
+			NetAddrConfig: forwarder.NetAddrConfig{
+				Host:     "0.0.0.0",
+				Port:     6789,
+				Protocol: protocol.NetProtocolTCP,
+			},
+		}, false},
+		{"12", "ssh:[::]:6789", &forwarder.ForwardInputConfig{
+			NetAddrConfig: forwarder.NetAddrConfig{
+				Host:     "::",
+				Port:     6789,
+				Protocol: protocol.NetProtocolTCP,
+			},
+		}, false},
+		{"13", "ssh:[2401:8a44:987b:fe11:a1e8:2fff:fe00:131]:6789", &forwarder.ForwardInputConfig{
+			NetAddrConfig: forwarder.NetAddrConfig{
+				Host:     "2401:8a44:987b:fe11:a1e8:2fff:fe00:131",
+				Port:     6789,
+				Protocol: protocol.NetProtocolTCP,
+			},
+		}, false},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

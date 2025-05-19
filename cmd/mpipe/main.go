@@ -52,13 +52,11 @@ func main() {
 		if output.Host == "ssh" && sshClient != nil {
 			ForwardOutputs = append(ForwardOutputs,
 				forwarder.NewForwardOutput(output, func(_ context.Context, network string, address string) (net.Conn, error) {
-					// fmt.Println("sshClient.Dial(network, address): ", network, address)
 					return sshClient.Dial(network, address)
 				}))
 		} else {
 			ForwardOutputs = append(ForwardOutputs, forwarder.NewForwardOutput(output, nil))
 		}
-		// fmt.Printf("Output(%d): %#v\n", i, output)
 	}
 
 	prettyPrintConfig(input.Config, outputs)
