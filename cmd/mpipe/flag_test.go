@@ -88,14 +88,14 @@ func Test_parseNetInput(t *testing.T) {
 		}, false},
 		{"12", "ssh:[::]:6789", &forwarder.ForwardInputConfig{
 			NetAddrConfig: forwarder.NetAddrConfig{
-				Host:     "::",
+				Host:     "[::]",
 				Port:     6789,
 				Protocol: protocol.NetProtocolTCP,
 			},
 		}, false},
 		{"13", "ssh:[2401:8a44:987b:fe11:a1e8:2fff:fe00:131]:6789", &forwarder.ForwardInputConfig{
 			NetAddrConfig: forwarder.NetAddrConfig{
-				Host:     "2401:8a44:987b:fe11:a1e8:2fff:fe00:131",
+				Host:     "[2401:8a44:987b:fe11:a1e8:2fff:fe00:131]",
 				Port:     6789,
 				Protocol: protocol.NetProtocolTCP,
 			},
@@ -201,7 +201,7 @@ func Test_parseNetOutput(t *testing.T) {
 		}, false},
 		{"11", "ssh:7890@tcp", &forwarder.ForwardOutputConfig{
 			NetAddrConfig: forwarder.NetAddrConfig{
-				Host:     "", //dial
+				Host:     "localhost",
 				Port:     7890,
 				Protocol: protocol.NetProtocolTCP,
 			},
